@@ -21,15 +21,22 @@ ros2 launch hobot_stereonet_utils test_cam.launch.py
 ros2 run hobot_stereonet_utils hobot_stereonet_utils
 ```
 
+## 运行参数
+
+| 名称      | 参数值    | 说明           |
+| --------- | --------- | -------------- |
+| save_num | 默认值：1 | 保存图像的序号 |
+
+
 ## 运行结果
 
 - 终端1结果
 
-[](./doc/test_cam.png)
+![](./doc/test_cam.png)
 
 - 终端2结果
 
-[](./doc/save_image.png)
+![](./doc/save_image.png)
 
 ## 使用案例
 
@@ -37,7 +44,7 @@ ros2 run hobot_stereonet_utils hobot_stereonet_utils
 
 可以配合[双目标定GitHub仓库](https://github.com/D-Robotics/stereo_calib.git)使用，对双目相机进行标定，采集图像后，输入标定程序即可获得标定结果
 
-[](./doc/display_and_save.png)
+![](./doc/display_and_save.png)
 
 ### 测试双目标定结果
 
@@ -48,4 +55,6 @@ ros2 run hobot_stereonet_utils hobot_stereonet_utils
 ros2 launch hobot_stereonet_utils test_stereo.launch.py stereo_calib_path:=./stereo_8.yaml visual_alpha:=4
 ```
 
-[](./doc/test_stereo.png)
+![](./doc/calib_file.png)
+
+![](./doc/test_stereo.png)
