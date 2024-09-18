@@ -1,3 +1,4 @@
+#include <sys/stat.h>
 #include <sstream>
 #include "rclcpp/rclcpp.hpp"
 #include "sensor_msgs/msg/image.hpp"
@@ -9,10 +10,19 @@ class ImgReceiverNode : public rclcpp::Node
 public:
     ImgReceiverNode() : Node("img_receiver_node")
     {
-        RCLCPP_INFO(this->get_logger(), "=> init img_receiver_node!");
         this->declare_parameter("save_num", 1);
         this->get_parameter("save_num", save_num_);
-        sub_ = this->create_subscription<sensor_msgs::msg::Image>("/image_combine_raw", 10, std::bind(&ImgReceiverNode::image_callback, this, std::placeholders::_1));
+        dir_ = this->declare_parameter("dir", dir_);
+        sub_ = this->create_subscription<sensor_msgs::msg::Image>(sub_topic_, 10, std::bind(&ImgReceiverNode::image_callback, this, std::placeholders::_1));
+        RCLCPP_WARN(this->get_logger(),
+            "Stereo sensor image collection node started! sub_topic: %s, save_num: %d, saved dir: %s",
+            sub_topic_.data(), save_num_, dir_.data());
+        if (access(dir_.c_str(), W_OK)) {
+            RCLCPP_ERROR(this->get_logger(),
+                "saved dir [%s] is not existed", dir_.c_str());
+            rclcpp::shutdown();
+            return;
+        }
     }
 
 private:
@@ -39,19 +49,21 @@ private:
         cv::cvtColor(nv12_image, bgr_image, cv::COLOR_YUV2BGR_NV12);
 
         // detect the keyboard and press the enter key
-        RCLCPP_INFO_ONCE(this->get_logger(), "\033[31m=> Press Enter to save the image...\033[0m");
+        RCLCPP_INFO_ONCE(this->get_logger(), "\033[92m=> Press Enter to save the image...\033[0m");
         if (std::cin.get() == '\n')
         {
             std::stringstream ss;
-            ss << std::setw(3) << std::setfill('0') << save_num_;
-            cv::imwrite("combine_" + ss.str() + ".png", bgr_image);
-            RCLCPP_INFO(this->get_logger(), "\033[31m=> Image saved as combine_%s.png\033[0m", ss.str().c_str());
+            ss << dir_ << "/combine_" << std::setw(3) << std::setfill('0') << save_num_ << ".png";
+            cv::imwrite(ss.str(), bgr_image);
+            RCLCPP_INFO(this->get_logger(), "\033[92m=> Image saved as [%s]\033[0m", ss.str().c_str());
             save_num_++;
         }
     }
 
     rclcpp::Subscription<sensor_msgs::msg::Image>::SharedPtr sub_;
     int save_num_ = 1;
+    std::string dir_ = "./data/calib_imgs";
+    std::string sub_topic_ = "/image_combine_raw";
 };
 
 int main(int argc, char *argv[])
