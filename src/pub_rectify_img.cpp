@@ -63,9 +63,9 @@ public:
             left_msg->data.assign(rectified_left_img_nv12.data, rectified_left_img_nv12.data + (rectified_left_img_nv12.rows * rectified_left_img_nv12.cols));
             stereo_msg_pub_->publish(*left_msg);
         }
-        esle
+        else
         {
-            cv::Mat frameBGR;
+            cv::Mat frameBGR, combine_nv12;
             cv::vconcat(rectified_left_img, rectified_right_img, frameBGR);
             bgr_to_nv12(frameBGR, combine_nv12);
 
