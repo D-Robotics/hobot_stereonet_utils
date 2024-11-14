@@ -54,7 +54,7 @@ def generate_launch_description():
         ),
         launch_arguments={
             "mipi_image_width": "1280",
-            "mipi_image_height": "640",
+            "mipi_image_height": "960",
             "mipi_frame_ts_type": "realtime",
             "frame_id": "pcl_link",
             "log_level": "error",
@@ -69,7 +69,9 @@ def generate_launch_description():
         parameters=[
             {
                 "calib_file_path": LaunchConfiguration("stereo_calib_path"),
-                "only_pub_left": True
+                "only_pub_left": True,
+                "pub_image_width": 1280,
+                "pub_image_height": 960,
             },
         ],
         arguments=["--ros-args", "--log-level", "info"],

@@ -13,10 +13,18 @@ public:
         // ======================================================================================================================================
         // param
         this->declare_parameter("calib_file_path", "");
-        this->get_parameter("calib_file_path", calib_file_path_);
         this->declare_parameter("only_pub_left", false);
+        this->declare_parameter("pub_image_width", 1280);
+        this->declare_parameter("pub_image_height", 640);
+        this->get_parameter("calib_file_path", calib_file_path_);
         this->get_parameter("only_pub_left", only_pub_left_);
-        RCLCPP_INFO_STREAM(this->get_logger(), "\033[31m" << "=> calib_file_path: " << calib_file_path_ << "\033[0m");
+        this->get_parameter("pub_image_width", pub_image_width_);
+        this->get_parameter("pub_image_height", pub_image_height_);
+        RCLCPP_INFO_STREAM(this->get_logger(), "\033[31m=> calib_file_path: " << calib_file_path_ << std::endl
+                                                                              << "=> only_pub_left: " << only_pub_left_ << std::endl
+                                                                              << "=> pub_image_width: " << pub_image_width_ << std::endl
+                                                                              << "=> pub_image_height: " << pub_image_height_ << std::endl
+                                                                              << "\033[0m");
         // ======================================================================================================================================
         // pub & sub
         stereo_msg_sub_ = this->create_subscription<sensor_msgs::msg::Image>("/image_combine_raw", 10, std::bind(&PubRectifyImgsNode::image_callback, this, std::placeholders::_1));
@@ -31,7 +39,7 @@ public:
             return;
         }
 
-        load_calib_file(fs["stereo0"], 1280, 640);
+        load_calib_file(fs["stereo0"], pub_image_width_, pub_image_height_);
 
         fs.release();
     }
@@ -358,6 +366,8 @@ private:
     cv::Mat undistmap1l, undistmap2l, undistmap1r, undistmap2r;
     float camera_cx, camera_cy, camera_fx, camera_fy, base_line;
     std::string calib_file_path_;
+    int pub_image_width_;
+    int pub_image_height_;
 };
 
 int main(int argc, char *argv[])
