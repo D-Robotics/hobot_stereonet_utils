@@ -34,7 +34,25 @@ def generate_launch_description():
     )
 
     local_image_path_arg = DeclareLaunchArgument(
-        "local_image_path", default_value="/userdata/zhikang.zeng/rectify_custom", description="local image path"
+        "local_image_path",
+        default_value="/userdata/zhikang.zeng/rectify_custom",
+        description="local image path",
+    )
+
+    camera_fx_arg = DeclareLaunchArgument(
+        "camera_fx", default_value="500", description="camera fx"
+    )
+
+    camera_cx_arg = DeclareLaunchArgument(
+        "camera_cx", default_value="640", description="camera cx"
+    )
+
+    camera_cy_arg = DeclareLaunchArgument(
+        "camera_cy", default_value="320", description="camera cy"
+    )
+
+    camera_b_arg = DeclareLaunchArgument(
+        "camera_b", default_value="0.07", description="camera b"
     )
 
     # 零拷贝环境配置
@@ -61,11 +79,16 @@ def generate_launch_description():
             "need_rectify": "false",
             "use_local_image": "true",
             "local_image_path": LaunchConfiguration("local_image_path"),
-            "camera_fx": "471.07099090250705",
-            "camera_fy": "471.07099090250705",
-            "camera_cx": "792.2310028076172",
-            "camera_cy": "251.99325561523438",
-            "base_line": "0.07212570020973243",
+            # "camera_fx": "471.07099090250705",
+            # "camera_fy": "471.07099090250705",
+            # "camera_cx": "792.2310028076172",
+            # "camera_cy": "251.99325561523438",
+            # "base_line": "0.07212570020973243",
+            "camera_fx": LaunchConfiguration("camera_fx"),
+            "camera_fy": LaunchConfiguration("camera_fx"),
+            "camera_cx": LaunchConfiguration("camera_cx"),
+            "camera_cy": LaunchConfiguration("camera_cy"),
+            "base_line": LaunchConfiguration("camera_b"),
             "alpha": LaunchConfiguration("visual_alpha"),
             "beta": LaunchConfiguration("visual_beta"),
             "stereo_combine_mode": "1",
@@ -112,6 +135,10 @@ def generate_launch_description():
             visual_alpha_arg,
             visual_beta_arg,
             local_image_path_arg,
+            camera_fx_arg,
+            camera_cx_arg,
+            camera_cy_arg,
+            camera_b_arg,
             shared_mem_node,
             stereonet_node,
             codec_node,
