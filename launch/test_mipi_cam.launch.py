@@ -23,6 +23,14 @@ from launch.substitutions import LaunchConfiguration
 
 
 def generate_launch_description():
+    mipi_image_width_arg = DeclareLaunchArgument(
+        "mipi_image_width", default_value="1280", description="mipi_image_width"
+    )
+
+    mipi_image_height_arg = DeclareLaunchArgument(
+        "mipi_image_height", default_value="640", description="mipi_image_height"
+    )
+
     # 零拷贝环境配置
     shared_mem_node = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
@@ -41,8 +49,8 @@ def generate_launch_description():
             )
         ),
         launch_arguments={
-            "mipi_image_width": "1280",
-            "mipi_image_height": "640",
+            "mipi_image_width": LaunchConfiguration("mipi_image_width"),
+            "mipi_image_height": LaunchConfiguration("mipi_image_height"),
             "mipi_frame_ts_type": "realtime",
             "frame_id": "pcl_link",
             "log_level": "error",
@@ -85,6 +93,8 @@ def generate_launch_description():
 
     return LaunchDescription(
         [
+            mipi_image_width_arg,
+            mipi_image_height_arg,
             shared_mem_node,
             dual_mipi_cam,
             codec_node,

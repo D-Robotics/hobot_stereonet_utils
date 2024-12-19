@@ -81,7 +81,7 @@ ros2 launch hobot_stereonet_utils test_rectify_mipi_cam_1280_960.launch.py stere
 
 ```shell
 # 在终端2运行以下命令，启动mipi双目功能包，输入http://ip:8000可以查看结果
-ros2 launch hobot_stereonet_utils test_mipi_stereo.launch.py stereo_calib_path:=./stereo_8.yaml visual_alpha:=4
+ros2 launch hobot_stereonet stereonet_model_web_visual_v2.launch.py stereo_calib_path:=./stereo_8.yaml
 ```
 
 ![](./doc/calib_file.png)
